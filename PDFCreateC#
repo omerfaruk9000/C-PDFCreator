@@ -1,0 +1,51 @@
+using System;
+using System.IO;
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+namespace PdfCreator
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btncreatepdf_Click(object sender, EventArgs e)
+        {
+            string filename = txtfilename.Text;//we defined a variable in string type, give the name filename and defined the text that in txtfilename textbox written
+            int pagenum = Convert.ToInt32(txtfilepagenum.Text);//we defined a variable in int type, give the name pagenum and defined the variable in the txtfilepagenum named tool
+
+            SaveFileDialog pdfcreate = new SaveFileDialog();//we defined SaveFileDialog and defined the name pdfcreate
+            pdfcreate.Filter = "PDF Dosyası|*.pdf";//we filter the pdfcreate
+            pdfcreate.FileName = filename;//we gave our pdf document the name that in the filename variable written
+
+            if (pdfcreate.ShowDialog() == DialogResult.OK)
+            {
+                string dosyayolu = pdfcreate.FileName;
+                using (FileStream pdf = new FileStream(dosyayolu, FileMode.Create))
+                {
+                    Document pdfdoc = new Document();//we defined a Document and give the name pdfdoc
+                    PdfWriter pdfwrite = PdfWriter.GetInstance(pdfdoc, pdf);//we defined a PdfWriter, give the name pdfwrite and give the parameters pdfdoc and pdf variables
+
+                    pdfdoc.Open();//we open the pdfdoc
+                    for (int i = 0; i < pagenum; i++)
+                    {
+                        pdfdoc.NewPage();
+                        Paragraph paragraph = new Paragraph("Sayfa " + (i + 1));
+                        pdfdoc.Add(paragraph);
+                    }
+                    //with this code we add the pdf document pages that the pagenum variable defined number
+                    pdfdoc.Close();//we close the pdfdoc
+                }
+                MessageBox.Show("İstediğiniz PDF dosyası oluşturuldu ve bilgisayarınıza indirildi!");
+            }
+        }
+    }
+}
